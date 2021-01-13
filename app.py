@@ -6,10 +6,13 @@ from io import BytesIO
 import string
 import os
 import json
+from keras.models import Model, load_model
+
+
 import siamese
-
+print("imported")
 model = load_model('./weights/siamese_model_resnet_4classes_new_weights.hd5')
-
+print("model hgya load")
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 app = Flask(__name__)
 
@@ -23,7 +26,7 @@ def predict():
 		# print("HERE")
 		message = request.form['myfile']
 		data=(message)
-		obj = siamese.classify(data,df_X_train,image_shape)
+		obj = siamese.Classify(data,df_X_train,image_shape)
 		print(classify.score(model))
 		#print(data)
 		print(message)

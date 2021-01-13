@@ -90,9 +90,9 @@ def show_images(images, title=""):
     [x.axis('off') for x in ax]
     plt.show()
     
-def load_images(image_paths):
-    images = [np.array(Image.open(img).convert('RGB')) for img in image_paths]
-    images = [resize_image(img) for img in images]    
+def load_image(image_path):
+    images = cv2.imread(image_path) 
+    images = resize_image(images)  
     return np.array(images)
 
 train_list = []
@@ -133,9 +133,9 @@ from sklearn.metrics import precision_recall_fscore_support
 import warnings
 warnings.filterwarnings('ignore')
 
-test_image = []
-
-model = load_model('weights/siamese_model_resnet_4classes_new_weights.hd5')
+test_image = load_image('/home/chirag/Desktop/PROJECT/Minor/images/covid/11547_2020_1202_Fig1_HTML-a.png')
+print("loaded")
+# model = load_model('weights/siamese_model_resnet_4classes_new_weights.hd5')
 
 class Classify(object):
     
@@ -176,7 +176,7 @@ class Classify(object):
         target_df[k] = i
         k=k+1
 
-      actual = selected_label
+      
 
       return pairs, target_df
         
@@ -190,8 +190,8 @@ class Classify(object):
          
         return res
 
-classify = Classify(test_image,df_X_train,image_shape)
+# classify = Classify(test_image,df_X_train,image_shape)
 
-res = classify.score(model)
-
+# res = classify.score(model)
+# print(res)
 #
