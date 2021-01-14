@@ -10,23 +10,27 @@
 	<header>
 		<div class="container">
 		<div id="brandname">
-			ML App
+			Covid Detector
 		</div>
-		<h2>Caption for Image</h2>
+		<!-- <h2>Prediction</h2> -->
 		
 	</div>
 	</header>
-	<p style="color:blue;font-size:20;text-align: center;"><b>Prediction</b></p>
-	<div class="results">
+	<!-- <p style="color:blue;font-size:20;text-align: center;"><b>Prediction</b></p> -->
+	<br>
+	<div class="results" style="align-items: center;margin: auto;">
 
 
 		
 	
 	
 	
-	<img src = 'Image.jpg'>
+		<img src="{{ img_data }}" height="{{300}}" width="{{300}}">
+
+
+		<br>
+		<p>prediction:<span style="color:red"> {% print(prediction) %}</span></p>
 	
-	{% print(prediction) %}
 	
 	</div>
 

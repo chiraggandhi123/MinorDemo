@@ -27,7 +27,8 @@ import random
 import numpy as np
 import pandas as pd
 import random
-from tqdm.notebook import tqdm
+# from tqdm.notebook import tqdm
+
 from sklearn.model_selection import train_test_split
 
 import PIL.Image as Image
@@ -139,13 +140,15 @@ print("loaded")
 
 class Classify(object):
     
-    def __init__(self, test_image, df_train, image_shape):
+    def __init__(self, df_test, df_train, image_shape):
         # Prepare parameters
         self.df_test = df_test.copy()
         self.df_train = df_train.copy()
         self.h, self.w, self.c = image_shape
+        self.labels_test = list(set(self.df_test['Class']))
         self.labels_train = list(set(self.df_train['Class']))
-    
+        # self.n = n
+        # self.k_trial = k_trial
     
     def resize_image(self, img_array):
         img = Image.fromarray(img_array)
@@ -159,9 +162,13 @@ class Classify(object):
         img = np.divide(img, 255)
         return img
 
-    def get_batch(self, image):
+    def get_batch(self, idx):
         
-      anchorImage = image
+      # Select our anchor labels
+      selected_label = self.df_test["Class"].iloc[idx]
+
+      anchorImage_path = self.df_test[self.df_test["Class"] == selected_label].sample(n=1)['Path'].values[0]
+      anchorImage = self.load_image(anchorImage_path)
 
       # Place holder for images
       pairs = [np.zeros((len(self.labels_train), self.h, self.w, self.c)) for i in range(2)]
@@ -176,20 +183,33 @@ class Classify(object):
         target_df[k] = i
         k=k+1
 
-      
+      actual = selected_label
 
-      return pairs, target_df
+      return pairs, actual, target_df
         
     def score(self, model):
+        score = 0
         
-        batch, targets = self.get_batch(test_image)
-        # Make prediction
-        pred = model.predict(batch)
-        pred = np.argmax(pred)
-        res = targets[pred]
-         
-        return res
+        # for k in tqdm(range(self.k_trial)):
+            # Get batch
+        data = []
+        res = []
+        for i in range(0,len(self.df_test)):
+            
+            batch, actual, targets = self.get_batch(i)
+            # Make prediction
+            pred = model.predict(batch)
+            pred = np.argmax(pred)
+            # actual = np.argmax(targets)
+            # if targets[pred] == actual:
+            #     score += 1
+            data.append(actual)
+            # print(pred)
+            res.append(targets[pred])
+            # res.append(targets[1])
 
+                
+        return data,res
 # classify = Classify(test_image,df_X_train,image_shape)
 
 # res = classify.score(model)
